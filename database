@@ -1,0 +1,9 @@
+import subprocess
+
+query_file = "/Users/kyokuhousya/Downloads/Targeted_GPCR_sequence_data/aa2ar_human.fasta"
+output_file = "/Users/kyokuhousya/Downloads/output.txt"
+blastdb_path = "/Users/kyokuhousya/Downloads/datapase/blastdb_uniprot_sprot"
+
+blast_cmd = ["blastp", "-query", query_file, "-db", blastdb_path, "-out", output_file]
+
+subprocess.run(blast_cmd, check=True)
