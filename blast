@@ -1,0 +1,37 @@
+import subprocess
+
+#比較したいアミノ酸配列のファイルが存在している経路と結果の出力の経路の指定
+query_file = input("対比したいアミノ酸配列経路を指定しでください: ")
+output_file = input("出力ファイル経路を指定しでください: ")
+
+#作成したデータペースの経路の指定、変更必要
+blastdb_path = "/Users/kyokuhousya/Downloads/datapase/blastdb_uniprot_sprot"
+
+#blastで比較したいアミノ酸配列とデータペース中のアミノ酸配列の比較
+blast_cmd = ["blastp", "-query", query_file, "-db", blastdb_path, "-out", output_file]
+
+subprocess.run(blast_cmd, check=True)
+
+#結果はoutput_fileに出力する
+blast_output_file = output_file
+
+max_score = None
+best_sequence_info = None
+sequence_info = None
+
+#結果中に一致度一番高いアミノ酸配列のScoreと配列名を検索して出力する
+with open(blast_output_file, "r") as blast_output:
+    for line in blast_output:
+        if line.startswith(">"):
+            sequence_info = line.strip()
+        elif line.startswith(" Score = "):
+            score = float(line.split("=")[1].split(" bits")[0])
+            if max_score is None or score > max_score:
+                max_score = score
+                best_sequence_info = sequence_info
+                
+if best_sequence_info is not None:
+    print("最高 Score: {:.1f}".format(max_score))
+    print("配列名:", best_sequence_info)
+else:
+    print("一致の配列が見つからない")
